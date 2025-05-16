@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑用户 - 希望工作室</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- ... existing header code ... -->
+
+    <main class="max-w-md mx-auto mt-10 bg-white p-8 rounded shadow">
+        <h2 class="text-2xl mb-4">编辑用户信息</h2>
+        <form method="POST">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-600">用户名</label>
+                    <input type="text" name="username" value="{{ original_username }}"
+                           class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-gray-600">用户类型</label>
+                    <select name="user_type" class="w-full p-2 border rounded">
+                        <option value="user" {% if user_type == 'user' %}selected{% endif %}>普通用户</option>
+                        <option value="admin" {% if user_type == 'admin' %}selected{% endif %}>管理员</option>
+                    </select>
+                </div>
+                <!-- 新增密码修改字段 -->
+                <div>
+                    <label class="block text-gray-600">新密码（留空不修改）</label>
+                    <input type="password" name="new_password" 
+                           class="w-full p-2 border rounded">
+                </div>
+                <button type="submit" 
+                        class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    保存修改
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- ... existing footer code ... -->
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>希望工作室 - 团队成员</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-500 text-white p-4">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl">希望工作室</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="/">主页</a></li>
+                    <li><a href="/about">关于我们</a></li>
+                    <li><a href="/team">团队成员</a></li>
+                    <li><a href="/works">作品展示</a></li>
+                    <li><a href="/contact">联系方式</a></li>
+                </ul>
+            </nav>
+            <div class="flex space-x-4">
+                {% if 'user' in session %}
+                    <a href="/user/{{ session.user }}" class="text-black bg-white px-3 py-1 rounded">我的</a>
+                    <a href="/logout" class="text-black bg-white px-3 py-1 rounded">退出登录</a>
+                {% else %}
+                    <a href="/register" class="text-black bg-white px-3 py-1 rounded">注册</a>
+                    <a href="/login" class="text-black bg-white px-3 py-1 rounded">登录</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <main class="p-4">
+        <h2 class="text-xl">团队成员</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded shadow">
+                <h3 class="text-lg mt-2">BusyMathing(BusySheng)</h3>
+                <p>这个网站的维护人员。</p>
+            </div>
+            <div class="bg-white p-4 rounded shadow">
+                <h3 class="text-lg mt-2">NanoTurtle1145</h3>
+                <p>另外一个HopeStudio官方网站的维护人员。</p>
+                <a href="https://nanoturtle1145.github.io/" class="underline text-sky-400/100">另外一个官网是啥？</a>
+            </div>
+            <!-- 可根据实际情况添加更多团队成员 -->
+        </div>
+    </main>
+    <footer class="bg-gray-200 p-4 text-center">
+        &copy; 2025 希望工作室 保留所有权利
+    </footer>
+</body>
+</html>

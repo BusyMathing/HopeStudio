@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册 - 希望工作室</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- ... existing header code ... -->
+    <main class="max-w-md mx-auto mt-10 bg-white p-8 rounded shadow">
+        <h2 class="text-2xl mb-4">用户注册</h2>
+        <form method="POST">
+            <div class="mb-4">
+                <label class="block text-gray-700">用户名</label>
+                <input type="text" name="username" class="w-full p-2 border rounded" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">密码</label>
+                <input type="password" name="password" class="w-full p-2 border rounded" required>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                注册
+            </button>
+            <a href="/login" class="ml-4 text-blue-500">已有账号？立即登录</a>
+        </form>
+    </main>
+    <!-- ... existing footer code ... -->
+</body>
+</html>

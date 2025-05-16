@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>希望工作室 - 主页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-500 text-white p-4">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl">希望工作室</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="/">主页</a></li>
+                    <li><a href="/about">关于我们</a></li>
+                    <li><a href="/team">团队成员</a></li>
+                    <li><a href="/works">作品展示</a></li>
+                    <li><a href="/contact">联系方式</a></li>
+                </ul>
+            </nav>
+            <div class="flex space-x-4">
+                {% if 'user' in session %}
+                    <a href="/user/{{ session.user }}" class="text-black bg-white px-3 py-1 rounded">我的</a>
+                    <a href="/logout" class="text-black bg-white px-3 py-1 rounded">退出登录</a>
+                {% else %}
+                    <a href="/register" class="text-black bg-white px-3 py-1 rounded">注册</a>
+                    <a href="/login" class="text-black bg-white px-3 py-1 rounded">登录</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <main class="p-4">
+        <h2 class="text-xl">欢迎来到希望工作室</h2>
+        <p>我们是一支充满创意和激情的团队，致力于为客户提供优质的服务。</p>
+    </main>
+    <footer class="bg-gray-200 p-4 text-center">
+        &copy; 2025 希望工作室 保留所有权利
+    </footer>
+</body>
+</html>

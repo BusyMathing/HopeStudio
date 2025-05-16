@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息 - 希望工作室</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-500 text-white p-4">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl">希望工作室</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="/">主页</a></li>
+                    <li><a href="/about">关于我们</a></li>
+                    <li><a href="/team">团队成员</a></li>
+                    <li><a href="/works">作品展示</a></li>
+                    <li><a href="/contact">联系方式</a></li>
+                </ul>
+            </nav>
+            <div class="flex space-x-4">
+                {% if 'user' in session %}
+                    <a href="/user/{{ session.user }}" class="text-black bg-white px-3 py-1 rounded">我的</a>
+                    <a href="/logout" class="text-black bg-white px-3 py-1 rounded">退出登录</a>
+                {% else %}
+                    <a href="/register" class="text-black bg-white px-3 py-1 rounded">注册</a>
+                    <a href="/login" class="text-black bg-white px-3 py-1 rounded">登录</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    <main class="max-w-md mx-auto mt-10 bg-white p-8 rounded shadow">
+        <h2 class="text-2xl mb-4">用户信息</h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-gray-600">用户名</label>
+                <p class="text-lg">{{ username }}</p>
+            </div>
+            <div>
+                <label class="block text-gray-600">注册时间</label>
+                <p class="text-lg">{{ register_date }}</p>
+            </div>
+        </div>
+        {% if user_type == 'admin' %}
+            <h3 class="text-xl mt-8">用户管理</h3>
+            <table class="w-full mt-4">
+                <thead>
+                    <tr>
+                        <th class="text-left">用户名</th>
+                        <th class="text-left">注册时间</th>
+                        <th class="text-left">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in all_users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.register_date }}</td>
+                        <td>
+                            <a href="/edit_user/{{ user.username }}" class="text-blue-500">修改</a>
+                            <form action="/delete_user/{{ user.username }}" method="POST" style="display: inline;">
+                                <button type="submit" class="text-red-500">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="mt-4">
+                <a href="/add_user" class="bg-green-500 text-white px-3 py-1 rounded">添加用户</a>
+            </div>
+        {% endif %}
+    </main>
+    <footer class="bg-blue-500 text-white p-4 mt-10">
+        <p class="text-center">希望工作室 &copy; 2023</p>
+    </footer>
+</body>
+</html>
