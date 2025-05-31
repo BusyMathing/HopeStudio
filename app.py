@@ -99,12 +99,16 @@ def user(username):
     user = mongo.db.users.find_one({'username': username})
     all_users = list(mongo.db.users.find({})) if current_user['user_type'] == 'admin' else None
     
+    # 添加反馈数据查询
+    feedback_list = list(mongo.db.feedback.find({})) if current_user['user_type'] == 'admin' else None
+    
     if user:
-        return render_template('user.html', 
+        return render_template('user.html',
                              username=user['username'],
                              register_date=user.get('register_date', '未知时间'),
                              user_type=user['user_type'],
-                             all_users=all_users)
+                             all_users=all_users,
+                             feedback_list=feedback_list)
     abort(404)
 
 @app.route('/delete_user/<username>', methods=['POST'])  # 已正确配置POST方法
@@ -204,6 +208,36 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html', error=e), 500
+
+@app.route('/feedback', methods=['GET', 'POST'])
+@login_required
+def feedback():
+    if request.method == 'POST':
+        content = request.form.get('content')
+        mongo.db.feedback.insert_one({
+            'username': session['user'],
+            'content': content,
+            'submit_time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        })
+        return  redirect('/')
+    return render_template('feedback.html')
+
+@app.route('/delete_feedback/<feedback_id>', methods=['POST'])
+@login_required
+def delete_feedback(feedback_id):
+    current_user = mongo.db.users.find_one({'username': session['user']})
+    if current_user['user_type'] != 'admin':
+        abort(403)
+    
+    from bson import ObjectId
+    mongo.db.feedback.delete_one({'_id': ObjectId(feedback_id)})
+    return redirect(url_for('user', username=session['user']))
+
+
+@app.route('/game')
+def game():
+    return render_template('game.html')
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80)
