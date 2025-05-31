@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点击方块小游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #game-container {
+            width: 500px;
+            height: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 2px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #score-display {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #target {
+            position: absolute;
+            cursor: pointer;
+            border-radius: 5px;
+            display: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            z-index: 10;
+        }
+
+        #time-display {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HopeStudio's Second Official Website!</h1>
+    <div id="score-display">得分: 0</div>
+    <div id="time-display">时间: 0秒</div>
+    <div id="game-container">
+        <div id="target"></div>
+        <div id="game-over">
+            <h2>游戏结束!</h2>
+            <p id="final-score">你的得分: 0</p>
+            <p id="final-time">游戏时间: 0秒</p>
+            <button id="restart-btn">重新开始</button>
+        </div>
+    </div>
+    <button id="start-btn">开始游戏</button>
+
+    <script>
+        // 获取DOM元素
+        const gameContainer = document.getElementById('game-container');
+        const target = document.getElementById('target');
+        const scoreDisplay = document.getElementById('score-display');
+        const timeDisplay = document.getElementById('time-display');
+        const gameOver = document.getElementById('game-over');
+        const finalScore = document.getElementById('final-score');
+        const finalTime = document.getElementById('final-time');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // 游戏变量
+        let score = 0;
+        let gameActive = false;
+        let speed = 2000; // 初始方块显示时间(毫秒)
+        let minSpeed = 800; // 最小方块显示时间(从500提高到800)
+        let speedDecrease = 50; // 每次得分后减少的时间(从100减少到50)
+        let gameStartTime = 0;
+        let gameTimer = null;
+        let targetTimer = null;
+
+        // 开始游戏
+        function startGame() {
+            score = 0;
+            gameActive = true;
+            speed = 2000;
+            updateScore();
+            gameOver.style.display = 'none';
+            startBtn.disabled = true;
+
+            // 重置计时器
+            gameStartTime = Date.now();
+            updateTime();
+            gameTimer = setInterval(updateTime, 1000);
+
+            // 开始生成方块
+            showTarget();
+        }
+
+        // 更新游戏时间显示
+        function updateTime() {
+            const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+            timeDisplay.textContent = `时间: ${elapsed}秒`;
+        }
+
+        // 显示目标方块
+        function showTarget() {
+            if (!gameActive) return;
+
+            // 清除之前的定时器
+            if (targetTimer) {
+                clearTimeout(targetTimer);
+            }
+
+            // 随机大小 (30px 到 80px)
+            const size = Math.floor(Math.random() * 50) + 30;
+            target.style.width = size + 'px';
+            target.style.height = size + 'px';
+
+            // 确保方块完全显示在游戏区域内
+            const maxX = gameContainer.clientWidth - size;
+            const maxY = gameContainer.clientHeight - size;
+
+            // 确保位置是正整数
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            target.style.left = Math.max(0, randomX) + 'px';
+            target.style.top = Math.max(0, randomY) + 'px';
+
+            // 随机颜色
+            const randomColor = getRandomColor();
+            target.style.backgroundColor = randomColor;
+
+            target.style.display = 'block';
+
+            // 设置方块自动消失的定时器
+            targetTimer = setTimeout(() => {
+                if (gameActive && target.style.display === 'block') {
+                    target.style.display = 'none';
+                    endGame();
+                }
+            }, speed);
+        }
+
+        // 生成随机颜色
+        function getRandomColor() {
+            const hue = Math.floor(Math.random() * 360);
+            const saturation = Math.floor(Math.random() * 50) + 50;
+            const lightness = Math.floor(Math.random() * 40) + 30;
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        // 点击方块
+        target.addEventListener('click', () => {
+            if (!gameActive) return;
+
+            score++;
+            updateScore();
+
+            // 加快方块消失速度，但减缓速度提升
+            if (speed > minSpeed) {
+                speed -= speedDecrease;
+                // 随着分数增加，速度下降幅度减小
+                speedDecrease = Math.max(10, speedDecrease - 1);
+            }
+
+            // 隐藏当前方块并显示新方块
+            target.style.display = 'none';
+            showTarget();
+        });
+
+        // 更新分数显示
+        function updateScore() {
+            scoreDisplay.textContent = `得分: ${score}`;
+        }
+
+        // 游戏结束
+        function endGame() {
+            gameActive = false;
+            target.style.display = 'none';
+
+            // 清除定时器
+            clearInterval(gameTimer);
+            if (targetTimer) {
+                clearTimeout(targetTimer);
+            }
+
+            // 计算最终时间
+            const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+
+            finalScore.textContent = `你的得分: ${score}`;
+            finalTime.textContent = `游戏时间: ${elapsed}秒`;
+            gameOver.style.display = 'block';
+            startBtn.disabled = false;
+        }
+
+        // 事件监听
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+    </script>
+</body>
+</html>
