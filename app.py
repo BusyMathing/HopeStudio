@@ -111,7 +111,7 @@ def user(username):
                              feedback_list=feedback_list)
     abort(404)
 
-@app.route('/delete_user/<username>', methods=['POST'])  # 已正确配置POST方法
+@app.route('/delete_user/<path:username>', methods=['POST'])  # 修改参数类型为path
 @login_required
 def delete_user(username):
     current_user = mongo.db.users.find_one({'username': session['user']})
@@ -122,7 +122,7 @@ def delete_user(username):
     mongo.db.users.delete_one({'username': username})
     return redirect(url_for('user', username=session['user']))
 
-@app.route('/edit_user/<username>', methods=['GET', 'POST'])  # 同时允许GET和POST
+@app.route('/edit_user/<path:username>', methods=['GET', 'POST'])  # 修改参数类型为path
 @login_required
 def edit_user(username):
     current_user = mongo.db.users.find_one({'username': session['user']})
